@@ -1,5 +1,8 @@
 'use strict';
 
+const TASK_COLORS = [`black`, `blue`, `yellow`]; // цвета карточек
+const TASK_COUNT = TASK_COLORS.length; // количество карточек на странице
+
 // Меню
 const createMenuTemplate = () => {
   return `
@@ -123,9 +126,9 @@ const createTaskListTemplate = () => {
 };
 
 // Карточка задачи
-const createSingleTaskTemplate = () => {
+const createSingleTaskTemplate = (taskColor) => {
   return `
-    <article class="card card--black">
+    <article class="card card--${taskColor}">
       <div class="card__form">
         <div class="card__inner">
           <div class="card__control">
@@ -458,3 +461,25 @@ const createTaskEditFormTemplate = () => {
 const createLoadMoreBtnTemplate = () => {
   return `<button class="load-more" type="button">load more</button>`;
 };
+
+// Функция для рендеринга компонентов
+const renderComponent = (container, markup, position) => {
+  container.insertAdjacentHTML(position, markup);
+};
+
+const mainElement = document.querySelector(`.main`);
+const menuContainer = mainElement.querySelector(`.main__control`);
+
+renderComponent(menuContainer, createMenuTemplate(), `beforeend`);
+renderComponent(mainElement, createFiltersTemplate(), `beforeend`);
+renderComponent(mainElement, createTaskListTemplate(), `beforeend`);
+
+const boardElement = mainElement.querySelector(`.board__tasks`);
+
+renderComponent(boardElement, createTaskEditFormTemplate(), `beforeend`);
+
+for (let i = 0; i < TASK_COUNT; i++) {
+  renderComponent(boardElement, createSingleTaskTemplate(TASK_COLORS[i]), `beforeend`);
+}
+
+renderComponent(mainElement, createLoadMoreBtnTemplate(), `beforeend`);
