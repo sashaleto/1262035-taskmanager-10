@@ -3,6 +3,10 @@
 const TASK_COLORS = [`black`, `blue`, `yellow`]; // цвета карточек
 const TASK_COUNT = TASK_COLORS.length; // количество карточек на странице
 
+const mainElement = document.querySelector(`.main`);
+const menuContainer = mainElement.querySelector(`.main__control`);
+let boardElement;
+
 // Меню
 const createMenuTemplate = () => {
   return `
@@ -467,14 +471,11 @@ const renderComponent = (container, markup, position) => {
   container.insertAdjacentHTML(position, markup);
 };
 
-const mainElement = document.querySelector(`.main`);
-const menuContainer = mainElement.querySelector(`.main__control`);
-
 renderComponent(menuContainer, createMenuTemplate(), `beforeend`);
 renderComponent(mainElement, createFiltersTemplate(), `beforeend`);
 renderComponent(mainElement, createTaskListTemplate(), `beforeend`);
 
-const boardElement = mainElement.querySelector(`.board__tasks`);
+boardElement = mainElement.querySelector(`.board__tasks`);
 
 renderComponent(boardElement, createTaskEditFormTemplate(), `beforeend`);
 
