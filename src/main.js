@@ -483,4 +483,4 @@ for (let i = 0; i < TASK_COUNT; i++) {
   renderComponent(boardElement, createSingleTaskTemplate(TASK_COLORS[i]), `beforeend`);
 }
 
-renderComponent(mainElement, createLoadMoreBtnTemplate(), `beforeend`);
+renderComponent(boardElement, createLoadMoreBtnTemplate(), `afterend`);
