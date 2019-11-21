@@ -1,7 +1,6 @@
 'use strict';
 
 const TASK_COLORS = [`black`, `blue`, `yellow`]; // цвета карточек
-const TASK_COUNT = TASK_COLORS.length; // количество карточек на странице
 
 const mainElement = document.querySelector(`.main`);
 const menuContainer = mainElement.querySelector(`.main__control`);
@@ -479,8 +478,6 @@ boardElement = mainElement.querySelector(`.board__tasks`);
 
 renderComponent(boardElement, createTaskEditFormTemplate(), `beforeend`);
 
-for (let i = 0; i < TASK_COUNT; i++) {
-  renderComponent(boardElement, createSingleTaskTemplate(TASK_COLORS[i]), `beforeend`);
-}
+TASK_COLORS.forEach((color) => renderComponent(boardElement, createSingleTaskTemplate(color), `beforeend`));
 
 renderComponent(boardElement, createLoadMoreBtnTemplate(), `afterend`);
