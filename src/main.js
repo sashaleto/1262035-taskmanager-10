@@ -1,5 +1,3 @@
-'use strict';
-
 const TASK_COLORS = [`black`, `blue`, `yellow`]; // цвета карточек
 
 const mainElement = document.querySelector(`.main`);
