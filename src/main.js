@@ -8,7 +8,9 @@ import {generateTasks} from './mocks/task.js';
 import {generateFilters} from './mocks/filters.js';
 import {FILTER_TITLES} from './constants.js';
 
-const TASK_COUNT = 22;
+const TASK_COUNT = 20;
+const COUNT_OF_FIRST_SHOWN_TASKS = 8;
+const COUNT_OF_NEXT_SHOWN_TASKS = 8;
 
 const tasks = generateTasks(TASK_COUNT);
 const filters = generateFilters(FILTER_TITLES);
@@ -30,6 +32,20 @@ boardElement = mainElement.querySelector(`.board__tasks`);
 
 renderComponent(boardElement, createTaskEditFormTemplate(tasks[0]), `beforeend`);
 
-tasks.slice(1).forEach((task) => renderComponent(boardElement, createSingleTaskTemplate(task), `beforeend`));
+let shownCardsNumber = COUNT_OF_FIRST_SHOWN_TASKS;
+tasks.slice(1, shownCardsNumber).forEach((task) => renderComponent(boardElement, createSingleTaskTemplate(task), `beforeend`));
 
 renderComponent(boardElement, createLoadMoreBtnTemplate(), `afterend`);
+
+const loadMoreButton = mainElement.querySelector(`.load-more`);
+
+loadMoreButton.addEventListener(`click`, () => {
+  const nextIndex = shownCardsNumber + COUNT_OF_NEXT_SHOWN_TASKS;
+
+  tasks.slice(shownCardsNumber, nextIndex).forEach((task) => renderComponent(boardElement, createSingleTaskTemplate(task), `beforeend`));
+  shownCardsNumber += COUNT_OF_NEXT_SHOWN_TASKS;
+
+  if (nextIndex >= tasks.length) {
+    loadMoreButton.remove();
+  }
+});
