@@ -1,6 +1,6 @@
 import {createMenuTemplate} from './components/main-menu.js';
-import {createFiltersTemplate} from './components/main-filter.js';
-import TaskList from './components/board.js';
+import FilterComponent from './components/main-filter.js';
+import TaskListComponent from './components/board.js';
 import {createSingleTaskTemplate} from './components/task-card.js';
 import {createTaskEditFormTemplate} from './components/task-card--edit.js';
 import {createLoadMoreBtnTemplate} from './components/load-more-button.js';
@@ -26,9 +26,10 @@ const renderComponent = (container, markup, position) => {
 };
 
 renderComponent(menuContainer, createMenuTemplate(), `beforeend`);
-renderComponent(mainElement, createFiltersTemplate(filters), `beforeend`);
 
-const taskList = new TaskList();
+render(mainElement, new FilterComponent(filters).getElement(), RenderPosition.BEFOREEND);
+
+const taskList = new TaskListComponent();
 render(mainElement, taskList.getElement(), RenderPosition.BEFOREEND);
 
 boardElement = mainElement.querySelector(`.board__tasks`);
