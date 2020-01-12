@@ -1,4 +1,4 @@
-import {formatTime} from '../utils.js';
+import {formatTime, createElementDiv} from '../utils.js';
 import {MONTH_NAMES} from '../constants.js';
 
 const createHashTagsTemplate = (tags) => {
@@ -13,7 +13,7 @@ const createHashTagsTemplate = (tags) => {
   }).join(``);
 };
 
-export const createSingleTaskTemplate = (task) => {
+const createSingleTaskTemplate = (task) => {
   const {description, dueDate, repeatingDays, tags, color} = task;
 
   const date = dueDate ? `${dueDate.getDate()} ${MONTH_NAMES[dueDate.getMonth()]}` : ``;
@@ -78,3 +78,26 @@ export const createSingleTaskTemplate = (task) => {
     </article>
   `;
 };
+
+export default class TaskComponent {
+  constructor(task) {
+    this._element = null;
+    this._task = task;
+  }
+
+  getTemplate() {
+    return createSingleTaskTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElementDiv(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

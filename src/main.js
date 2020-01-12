@@ -1,7 +1,7 @@
 import MainMenuComponent from './components/main-menu.js';
 import FilterComponent from './components/main-filter.js';
 import TaskListComponent from './components/board.js';
-import {createSingleTaskTemplate} from './components/task-card.js';
+import TaskComponent from './components/task-card.js';
 import {createTaskEditFormTemplate} from './components/task-card--edit.js';
 import {createLoadMoreBtnTemplate} from './components/load-more-button.js';
 import {generateTasks} from './mocks/task.js';
@@ -37,7 +37,7 @@ boardElement = mainElement.querySelector(`.board__tasks`);
 renderComponent(boardElement, createTaskEditFormTemplate(tasks[0]), `beforeend`);
 
 let lastShownCardNumber = INITIALLY_SHOWN_TASKS_COUNT;
-tasks.slice(1, lastShownCardNumber).forEach((task) => renderComponent(boardElement, createSingleTaskTemplate(task), `beforeend`));
+tasks.slice(1, lastShownCardNumber).forEach((task) => render(boardElement, new TaskComponent(task).getElement(), RenderPosition.BEFOREEND));
 
 renderComponent(boardElement, createLoadMoreBtnTemplate(), `afterend`);
 
@@ -46,7 +46,7 @@ const loadMoreButton = mainElement.querySelector(`.load-more`);
 loadMoreButton.addEventListener(`click`, () => {
   const increasedCardNumber = lastShownCardNumber + NEXT_SHOWN_TASKS_COUNT;
 
-  tasks.slice(lastShownCardNumber, increasedCardNumber).forEach((task) => renderComponent(boardElement, createSingleTaskTemplate(task), `beforeend`));
+  tasks.slice(lastShownCardNumber, increasedCardNumber).forEach((task) => render(boardElement, new TaskComponent(task).getElement(), RenderPosition.BEFOREEND));
   lastShownCardNumber = increasedCardNumber;
 
   if (increasedCardNumber >= tasks.length) {
