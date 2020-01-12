@@ -1,12 +1,13 @@
 import {createMenuTemplate} from './components/main-menu.js';
 import {createFiltersTemplate} from './components/main-filter.js';
-import {createTaskListTemplate} from './components/board.js';
+import TaskList from './components/board.js';
 import {createSingleTaskTemplate} from './components/task-card.js';
 import {createTaskEditFormTemplate} from './components/task-card--edit.js';
 import {createLoadMoreBtnTemplate} from './components/load-more-button.js';
 import {generateTasks} from './mocks/task.js';
 import {generateFilters} from './mocks/filters.js';
-import {FILTER_TITLES} from './constants.js';
+import {FILTER_TITLES, RenderPosition} from './constants.js';
+import {render} from './utils';
 
 const TASK_COUNT = 20;
 const INITIALLY_SHOWN_TASKS_COUNT = 8;
@@ -26,7 +27,9 @@ const renderComponent = (container, markup, position) => {
 
 renderComponent(menuContainer, createMenuTemplate(), `beforeend`);
 renderComponent(mainElement, createFiltersTemplate(filters), `beforeend`);
-renderComponent(mainElement, createTaskListTemplate(), `beforeend`);
+
+const taskList = new TaskList();
+render(mainElement, taskList.getElement(), RenderPosition.BEFOREEND);
 
 boardElement = mainElement.querySelector(`.board__tasks`);
 
