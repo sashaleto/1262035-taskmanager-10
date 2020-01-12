@@ -26,10 +26,27 @@ const taskList = new TaskListComponent();
 render(mainElement, taskList.getElement(), RenderPosition.BEFOREEND);
 
 const boardElement = mainElement.querySelector(`.board__tasks`);
-render(boardElement, new TaskEditFormComponent(tasks[0]).getElement(), RenderPosition.BEFOREEND);
+
+const renderTask = (task) => {
+  const taskComponent = new TaskComponent(task);
+  const taskFormComponent = new TaskEditFormComponent(task);
+
+  const editButton = taskComponent.getElement().querySelector(`.card__btn--edit`);
+  const editForm = taskFormComponent.getElement().querySelector(`form`);
+
+  editButton.addEventListener(`click`, () => {
+    boardElement.replaceChild(taskFormComponent.getElement(), taskComponent.getElement());
+  });
+
+  editForm.addEventListener(`submit`, () => {
+    boardElement.replaceChild(taskComponent.getElement(), taskFormComponent.getElement());
+  });
+
+  render(boardElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
+};
 
 let lastShownCardNumber = INITIALLY_SHOWN_TASKS_COUNT;
-tasks.slice(1, lastShownCardNumber).forEach((task) => render(boardElement, new TaskComponent(task).getElement(), RenderPosition.BEFOREEND));
+tasks.slice(0, lastShownCardNumber).forEach((task) => renderTask(task));
 
 const loadMoreComponent = new LoadMoreComponent();
 const loadMoreButton = loadMoreComponent.getElement();
