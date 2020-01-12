@@ -18,3 +18,8 @@ export const FILTER_TITLES = [`All`, `Overdue`, `Today`, `Favorites`, `Repeating
 export const DAYS = [`mo`, `tu`, `we`, `th`, `fr`, `sa`, `su`];
 
 export const COLORS = [`black`, `yellow`, `blue`, `green`, `pink`];
+
+export const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
+};
