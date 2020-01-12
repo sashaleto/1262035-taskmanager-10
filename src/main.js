@@ -2,7 +2,7 @@ import MainMenuComponent from './components/main-menu.js';
 import FilterComponent from './components/main-filter.js';
 import TaskListComponent from './components/board.js';
 import TaskComponent from './components/task-card.js';
-import {createTaskEditFormTemplate} from './components/task-card--edit.js';
+import TaskEditFormComponent from './components/task-card--edit.js';
 import {createLoadMoreBtnTemplate} from './components/load-more-button.js';
 import {generateTasks} from './mocks/task.js';
 import {generateFilters} from './mocks/filters.js';
@@ -34,7 +34,7 @@ render(mainElement, taskList.getElement(), RenderPosition.BEFOREEND);
 
 boardElement = mainElement.querySelector(`.board__tasks`);
 
-renderComponent(boardElement, createTaskEditFormTemplate(tasks[0]), `beforeend`);
+render(boardElement, new TaskEditFormComponent(tasks[0]).getElement(), RenderPosition.BEFOREEND);
 
 let lastShownCardNumber = INITIALLY_SHOWN_TASKS_COUNT;
 tasks.slice(1, lastShownCardNumber).forEach((task) => render(boardElement, new TaskComponent(task).getElement(), RenderPosition.BEFOREEND));
