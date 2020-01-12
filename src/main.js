@@ -1,4 +1,4 @@
-import {createMenuTemplate} from './components/main-menu.js';
+import MainMenuComponent from './components/main-menu.js';
 import FilterComponent from './components/main-filter.js';
 import TaskListComponent from './components/board.js';
 import {createSingleTaskTemplate} from './components/task-card.js';
@@ -25,7 +25,7 @@ const renderComponent = (container, markup, position) => {
   container.insertAdjacentHTML(position, markup);
 };
 
-renderComponent(menuContainer, createMenuTemplate(), `beforeend`);
+render(menuContainer, new MainMenuComponent().getElement(), RenderPosition.BEFOREEND);
 
 render(mainElement, new FilterComponent(filters).getElement(), RenderPosition.BEFOREEND);
 

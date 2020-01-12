@@ -1,5 +1,6 @@
-// Меню
-export const createMenuTemplate = () => {
+import {createElementDiv} from "../utils";
+
+const createMenuTemplate = () => {
   return `
     <section class="control__btn-wrap">
       <input
@@ -31,3 +32,25 @@ export const createMenuTemplate = () => {
     </section>
   `;
 };
+
+export default class MainMenuComponent {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createMenuTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElementDiv(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
