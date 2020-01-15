@@ -34,13 +34,29 @@ const renderTask = (task) => {
   const editButton = taskComponent.getElement().querySelector(`.card__btn--edit`);
   const editForm = taskFormComponent.getElement().querySelector(`form`);
 
-  editButton.addEventListener(`click`, () => {
+  const replaceTaskToForm = () => {
     boardElement.replaceChild(taskFormComponent.getElement(), taskComponent.getElement());
+  };
+
+  const replaceFormToTask = () => {
+    boardElement.replaceChild(taskComponent.getElement(), taskFormComponent.getElement());
+  };
+
+  const onEscKeyDown = (evt) => {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      replaceFormToTask();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  editButton.addEventListener(`click`, () => {
+    replaceTaskToForm();
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
-  editForm.addEventListener(`submit`, () => {
-    boardElement.replaceChild(taskComponent.getElement(), taskFormComponent.getElement());
-  });
+  editForm.addEventListener(`submit`, replaceFormToTask);
 
   render(boardElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
 };
@@ -52,6 +68,7 @@ const loadMoreComponent = new LoadMoreComponent();
 const loadMoreButton = loadMoreComponent.getElement();
 
 render(taskList.getElement(), loadMoreButton, RenderPosition.BEFOREEND);
+
 
 loadMoreButton.addEventListener(`click`, () => {
   const increasedCardNumber = lastShownCardNumber + NEXT_SHOWN_TASKS_COUNT;
