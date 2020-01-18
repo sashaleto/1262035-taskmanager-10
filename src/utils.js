@@ -31,7 +31,7 @@ export const formatTime = (date) => {
   return `${hours}:${minutes} ${interval}`;
 };
 
-export const createElementDiv = (template) => {
+export const createElement = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;
 

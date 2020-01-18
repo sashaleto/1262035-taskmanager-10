@@ -1,19 +1,17 @@
 import {createElement} from '../utils';
 
-// Доска задач
-const createBoardTemplate = () => {
-  return `
-    <section class="board container"></section>
-  `;
+// Спиок задач
+const createTaskListTemplate = () => {
+  return `<div class="board__tasks"></div>`;
 };
 
-export default class BoardComponent {
+export default class TaskListComponent {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createBoardTemplate();
+    return createTaskListTemplate();
   }
 
   getElement() {

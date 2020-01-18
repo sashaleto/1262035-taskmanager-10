@@ -1,6 +1,6 @@
 import {DAYS, COLORS, MONTH_NAMES} from '../constants.js';
 import {formatTime} from '../utils.js';
-import {createElementDiv} from "../utils";
+import {createElement} from "../utils";
 
 const makeRepeatingDaysTemplate = (days, repeatingDays) => {
   const daysMarkup = days.map((title) => {
@@ -190,7 +190,7 @@ export default class TaskEditFormComponent {
 
   getElement() {
     if (!this._element) {
-      this._element = createElementDiv(this.getTemplate());
+      this._element = createElement(this.getTemplate());
     }
 
     return this._element;
