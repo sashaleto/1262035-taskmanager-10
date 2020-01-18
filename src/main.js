@@ -1,6 +1,7 @@
 import MainMenuComponent from './components/main-menu.js';
 import FilterComponent from './components/main-filter.js';
-import TaskListComponent from './components/board.js';
+import BoardComponent from './components/board.js';
+import TaskListComponent from './components/task-list.js';
 import TaskComponent from './components/task-card.js';
 import TaskEditFormComponent from './components/task-card--edit.js';
 import LoadMoreComponent from './components/load-more-button.js';
@@ -8,6 +9,7 @@ import {generateTasks} from './mocks/task.js';
 import {generateFilters} from './mocks/filters.js';
 import {FILTER_TITLES, RenderPosition} from './constants.js';
 import {render} from './utils';
+import BoardFilterComponent from "./components/board-filter";
 
 const TASK_COUNT = 20;
 const INITIALLY_SHOWN_TASKS_COUNT = 8;
@@ -22,10 +24,16 @@ const menuContainer = mainElement.querySelector(`.main__control`);
 render(menuContainer, new MainMenuComponent().getElement(), RenderPosition.BEFOREEND);
 render(mainElement, new FilterComponent(filters).getElement(), RenderPosition.BEFOREEND);
 
-const taskList = new TaskListComponent();
-render(mainElement, taskList.getElement(), RenderPosition.BEFOREEND);
+const boardComponent = new BoardComponent();
+const boardElement = boardComponent.getElement();
+render(mainElement, boardElement, RenderPosition.BEFOREEND);
 
-const boardElement = mainElement.querySelector(`.board__tasks`);
+const boardFilterComponent = new BoardFilterComponent();
+render(boardElement, boardFilterComponent.getElement(), RenderPosition.BEFOREEND);
+
+const tasksListComponent = new TaskListComponent();
+const tasksListElement = tasksListComponent.getElement();
+render(boardElement, tasksListElement, RenderPosition.BEFOREEND);
 
 const renderTask = (task) => {
   const taskComponent = new TaskComponent(task);
@@ -35,11 +43,11 @@ const renderTask = (task) => {
   const editForm = taskFormComponent.getElement().querySelector(`form`);
 
   const replaceTaskToForm = () => {
-    boardElement.replaceChild(taskFormComponent.getElement(), taskComponent.getElement());
+    tasksListElement.replaceChild(taskFormComponent.getElement(), taskComponent.getElement());
   };
 
   const replaceFormToTask = () => {
-    boardElement.replaceChild(taskComponent.getElement(), taskFormComponent.getElement());
+    tasksListElement.replaceChild(taskComponent.getElement(), taskFormComponent.getElement());
   };
 
   const onEscKeyDown = (evt) => {
@@ -58,7 +66,7 @@ const renderTask = (task) => {
 
   editForm.addEventListener(`submit`, replaceFormToTask);
 
-  render(boardElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
+  render(tasksListElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
 };
 
 let lastShownCardNumber = INITIALLY_SHOWN_TASKS_COUNT;
@@ -67,13 +75,13 @@ tasks.slice(0, lastShownCardNumber).forEach((task) => renderTask(task));
 const loadMoreComponent = new LoadMoreComponent();
 const loadMoreButton = loadMoreComponent.getElement();
 
-render(taskList.getElement(), loadMoreButton, RenderPosition.BEFOREEND);
+render(boardElement, loadMoreButton, RenderPosition.BEFOREEND);
 
 
 loadMoreButton.addEventListener(`click`, () => {
   const increasedCardNumber = lastShownCardNumber + NEXT_SHOWN_TASKS_COUNT;
 
-  tasks.slice(lastShownCardNumber, increasedCardNumber).forEach((task) => render(boardElement, new TaskComponent(task).getElement(), RenderPosition.BEFOREEND));
+  tasks.slice(lastShownCardNumber, increasedCardNumber).forEach((task) => render(tasksListElement, new TaskComponent(task).getElement(), RenderPosition.BEFOREEND));
   lastShownCardNumber = increasedCardNumber;
 
   if (increasedCardNumber >= tasks.length) {
