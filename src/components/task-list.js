@@ -1,4 +1,4 @@
-import {createElementDiv} from '../utils';
+import {createElement} from '../utils';
 
 // Спиок задач
 const createTaskListTemplate = () => {
@@ -16,7 +16,7 @@ export default class TaskListComponent {
 
   getElement() {
     if (!this._element) {
-      this._element = createElementDiv(this.getTemplate());
+      this._element = createElement(this.getTemplate());
     }
 
     return this._element;

@@ -1,4 +1,4 @@
-import {createElementDiv} from "../utils";
+import {createElement} from "../utils";
 
 const createMenuTemplate = () => {
   return `
@@ -44,7 +44,7 @@ export default class MainMenuComponent {
 
   getElement() {
     if (!this._element) {
-      this._element = createElementDiv(this.getTemplate());
+      this._element = createElement(this.getTemplate());
     }
 
     return this._element;

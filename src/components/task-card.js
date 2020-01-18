@@ -1,4 +1,4 @@
-import {formatTime, createElementDiv} from '../utils.js';
+import {formatTime, createElement} from '../utils.js';
 import {MONTH_NAMES} from '../constants.js';
 
 const createHashTagsTemplate = (tags) => {
@@ -91,7 +91,7 @@ export default class TaskComponent {
 
   getElement() {
     if (!this._element) {
-      this._element = createElementDiv(this.getTemplate());
+      this._element = createElement(this.getTemplate());
     }
 
     return this._element;
