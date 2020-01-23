@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbstractComponent from './abstract-component';
 
 // Список задач
 const createBoardFiltersTemplate = () => {
@@ -11,24 +11,8 @@ const createBoardFiltersTemplate = () => {
   `;
 };
 
-export default class BoardFilterComponent {
-  constructor() {
-    this._element = null;
-  }
-
+export default class BoardFilterComponent extends AbstractComponent {
   getTemplate() {
     return createBoardFiltersTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

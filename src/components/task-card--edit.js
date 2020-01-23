@@ -1,6 +1,6 @@
+import AbstractComponent from './abstract-component';
 import {DAYS, COLORS, MONTH_NAMES} from '../constants.js';
 import {formatTime} from '../utils.js';
-import {createElement} from "../utils";
 
 const makeRepeatingDaysTemplate = (days, repeatingDays) => {
   const daysMarkup = days.map((title) => {
@@ -133,15 +133,15 @@ const createTaskEditFormTemplate = (task) => {
                 <button class="card__date-deadline-toggle" type="button">
                   date: <span class="card__date-status">${hasDueDate ? `yes` : `no`}</span>
                 </button>
-                
+
                 ${deadlineMarkup}
-                
+
                 <button class="card__repeat-toggle" type="button">
                   repeat:<span class="card__repeat-status">${isRepeated ? `yes` : `no`}</span>
                 </button>
-                
+
                 ${daysMarkup}
-                
+
               </div>
 
               <div class="card__hashtag">
@@ -178,25 +178,13 @@ const createTaskEditFormTemplate = (task) => {
   `;
 };
 
-export default class TaskEditFormComponent {
+export default class TaskEditFormComponent extends AbstractComponent {
   constructor(task) {
-    this._element = null;
+    super();
     this._task = task;
   }
 
   getTemplate() {
     return createTaskEditFormTemplate(this._task);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

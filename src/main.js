@@ -12,7 +12,7 @@ import {generateFilters} from './mocks/filters.js';
 import {FILTER_TITLES, RenderPosition} from './constants.js';
 import {render} from './utils';
 
-const TASK_COUNT = 0;
+const TASK_COUNT = 10;
 const INITIALLY_SHOWN_TASKS_COUNT = 8;
 const NEXT_SHOWN_TASKS_COUNT = 8;
 

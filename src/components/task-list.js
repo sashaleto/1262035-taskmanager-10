@@ -1,28 +1,12 @@
-import {createElement} from '../utils';
+import AbstractComponent from './abstract-component';
 
 // Спиок задач
 const createTaskListTemplate = () => {
   return `<div class="board__tasks"></div>`;
 };
 
-export default class TaskListComponent {
-  constructor() {
-    this._element = null;
-  }
-
+export default class TaskListComponent extends AbstractComponent {
   getTemplate() {
     return createTaskListTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
