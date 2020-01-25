@@ -20,8 +20,6 @@ const renderTask = (task, tasksList) => {
   const taskComponent = new TaskComponent(task);
   const taskFormComponent = new TaskEditFormComponent(task);
 
-  const editForm = taskFormComponent.getElement().querySelector(`form`);
-
   const onEscKeyDown = (evt) => {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
@@ -36,7 +34,7 @@ const renderTask = (task, tasksList) => {
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
-  editForm.addEventListener(`submit`, () => {
+  taskFormComponent.setFormSubmitHandler(() => {
     replace(taskComponent, taskFormComponent);
   });
 
