@@ -1,5 +1,3 @@
-import {RenderPosition} from './constants';
-
 /**
  * Генерация случайного числа в диапазоне от 0 до max
  * @param {number} max - максимальное значение
@@ -29,22 +27,4 @@ export const formatTime = (date) => {
   const interval = date.getHours() > 11 ? `PM` : `AM`;
 
   return `${hours}:${minutes} ${interval}`;
-};
-
-export const createElement = (template) => {
-  const newElement = document.createElement(`div`);
-  newElement.innerHTML = template;
-
-  return newElement.firstElementChild;
-};
-
-export const render = (container, element, position) => {
-  switch (position) {
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case RenderPosition.BEFOREEND:
-      container.append(element);
-      break;
-  }
 };
