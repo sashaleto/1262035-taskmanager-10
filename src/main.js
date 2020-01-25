@@ -59,11 +59,10 @@ const renderBoard = (boardComponent, tasks) => {
   tasks.slice(0, lastShownCardNumber).forEach((task) => renderTask(task, tasksList.getElement()));
 
   const loadMoreComponent = new LoadMoreComponent();
-  const loadMoreButton = loadMoreComponent.getElement();
 
   render(boardElement, loadMoreComponent, RenderPosition.BEFOREEND);
 
-  loadMoreButton.addEventListener(`click`, () => {
+  loadMoreComponent.setClickHandler(() => {
     const increasedCardNumber = lastShownCardNumber + NEXT_SHOWN_TASKS_COUNT;
 
     tasks.slice(lastShownCardNumber, increasedCardNumber)
