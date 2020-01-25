@@ -20,7 +20,6 @@ const renderTask = (task, tasksList) => {
   const taskComponent = new TaskComponent(task);
   const taskFormComponent = new TaskEditFormComponent(task);
 
-  const editButton = taskComponent.getElement().querySelector(`.card__btn--edit`);
   const editForm = taskFormComponent.getElement().querySelector(`form`);
 
   const onEscKeyDown = (evt) => {
@@ -32,7 +31,7 @@ const renderTask = (task, tasksList) => {
     }
   };
 
-  editButton.addEventListener(`click`, () => {
+  taskComponent.setEditButtonClickHandler(() => {
     replace(taskFormComponent, taskComponent);
     document.addEventListener(`keydown`, onEscKeyDown);
   });
