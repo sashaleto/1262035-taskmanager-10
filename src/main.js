@@ -9,8 +9,8 @@ import LoadMoreComponent from './components/load-more-button.js';
 import BoardFilterComponent from './components/board-filter';
 import {generateTasks} from './mocks/task.js';
 import {generateFilters} from './mocks/filters.js';
-import {FILTER_TITLES, RenderPosition} from './constants.js';
-import {render} from './utils';
+import {FILTER_TITLES} from './constants.js';
+import {RenderPosition, render, replace, remove} from './utils/render';
 
 const TASK_COUNT = 10;
 const INITIALLY_SHOWN_TASKS_COUNT = 8;
@@ -23,31 +23,25 @@ const renderTask = (task, tasksList) => {
   const editButton = taskComponent.getElement().querySelector(`.card__btn--edit`);
   const editForm = taskFormComponent.getElement().querySelector(`form`);
 
-  const replaceTaskToForm = () => {
-    tasksList.replaceChild(taskFormComponent.getElement(), taskComponent.getElement());
-  };
-
-  const replaceFormToTask = () => {
-    tasksList.replaceChild(taskComponent.getElement(), taskFormComponent.getElement());
-  };
-
   const onEscKeyDown = (evt) => {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscKey) {
-      replaceFormToTask();
+      replace(taskComponent, taskFormComponent);
       document.removeEventListener(`keydown`, onEscKeyDown);
     }
   };
 
   editButton.addEventListener(`click`, () => {
-    replaceTaskToForm();
+    replace(taskFormComponent, taskComponent);
     document.addEventListener(`keydown`, onEscKeyDown);
   });
 
-  editForm.addEventListener(`submit`, replaceFormToTask);
+  editForm.addEventListener(`submit`, () => {
+    replace(taskComponent, taskFormComponent);
+  });
 
-  render(tasksList, taskComponent.getElement(), RenderPosition.BEFOREEND);
+  render(tasksList, taskComponent, RenderPosition.BEFOREEND);
 };
 
 const renderBoard = (boardComponent, tasks) => {
@@ -55,14 +49,14 @@ const renderBoard = (boardComponent, tasks) => {
   const boardElement = boardComponent.getElement();
 
   if (isAllTasksArchived || !tasks.length) {
-    render(boardElement, new NoTasks().getElement(), RenderPosition.BEFOREEND);
+    render(boardElement, new NoTasks(), RenderPosition.BEFOREEND);
     return;
   }
 
-  render(boardElement, new BoardFilterComponent().getElement(), RenderPosition.BEFOREEND);
+  render(boardElement, new BoardFilterComponent(), RenderPosition.BEFOREEND);
 
   const tasksList = new TaskListComponent();
-  render(boardElement, tasksList.getElement(), RenderPosition.BEFOREEND);
+  render(boardElement, tasksList, RenderPosition.BEFOREEND);
 
   let lastShownCardNumber = INITIALLY_SHOWN_TASKS_COUNT;
   tasks.slice(0, lastShownCardNumber).forEach((task) => renderTask(task, tasksList.getElement()));
@@ -70,7 +64,7 @@ const renderBoard = (boardComponent, tasks) => {
   const loadMoreComponent = new LoadMoreComponent();
   const loadMoreButton = loadMoreComponent.getElement();
 
-  render(boardElement, loadMoreButton, RenderPosition.BEFOREEND);
+  render(boardElement, loadMoreComponent, RenderPosition.BEFOREEND);
 
   loadMoreButton.addEventListener(`click`, () => {
     const increasedCardNumber = lastShownCardNumber + NEXT_SHOWN_TASKS_COUNT;
@@ -80,8 +74,7 @@ const renderBoard = (boardComponent, tasks) => {
     lastShownCardNumber = increasedCardNumber;
 
     if (increasedCardNumber >= tasks.length) {
-      loadMoreComponent.removeElement();
-      loadMoreButton.remove();
+      remove(loadMoreComponent);
     }
   });
 };
@@ -92,10 +85,10 @@ const filters = generateFilters(FILTER_TITLES);
 const mainElement = document.querySelector(`.main`);
 const menuContainer = mainElement.querySelector(`.main__control`);
 
-render(menuContainer, new MainMenuComponent().getElement(), RenderPosition.BEFOREEND);
-render(mainElement, new FilterComponent(filters).getElement(), RenderPosition.BEFOREEND);
+render(menuContainer, new MainMenuComponent(), RenderPosition.BEFOREEND);
+render(mainElement, new FilterComponent(filters), RenderPosition.BEFOREEND);
 
 const boardComponent = new BoardComponent();
-render(mainElement, boardComponent.getElement(), RenderPosition.BEFOREEND);
+render(mainElement, boardComponent, RenderPosition.BEFOREEND);
 
 renderBoard(boardComponent, tasks);
