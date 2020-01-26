@@ -2,7 +2,7 @@ import TaskComponent from "../components/task-card";
 import TaskEditFormComponent from "../components/task-card--edit";
 import {remove, render, RenderPosition, replace} from "../utils/render";
 import NoTasksComponent from "../components/no-tasks";
-import BoardFilterComponent from "../components/board-filter";
+import BoardFilterComponent, {SortType} from "../components/board-filter";
 import TaskListComponent from "../components/task-list";
 import LoadMoreComponent from "../components/load-more-button";
 
@@ -33,6 +33,9 @@ const renderTask = (task, tasksList) => {
 
   render(tasksList, taskComponent, RenderPosition.BEFOREEND);
 };
+const renderTasks = (taskListComponent, tasks) => {
+  tasks.forEach((task) => renderTask(task, taskListComponent.getElement()));
+};
 
 export default class BoardController {
   constructor(boardComponent) {
@@ -58,21 +61,52 @@ export default class BoardController {
     render(container, tasksList, RenderPosition.BEFOREEND);
 
     let lastShownCardNumber = INITIALLY_SHOWN_TASKS_COUNT;
-    tasks.slice(0, lastShownCardNumber).forEach((task) => renderTask(task, tasksList.getElement()));
+    renderTasks(tasksList, tasks.slice(0, lastShownCardNumber));
 
-    const loadMoreComponent = this._loadMoreComponent;
+    const renderLoadMoreButton = () => {
+      if (INITIALLY_SHOWN_TASKS_COUNT >= tasks.length) {
+        return;
+      }
+      const loadMoreComponent = this._loadMoreComponent;
 
-    render(container, loadMoreComponent, RenderPosition.BEFOREEND);
+      render(container, loadMoreComponent, RenderPosition.BEFOREEND);
 
-    loadMoreComponent.setClickHandler(() => {
-      const increasedCardNumber = lastShownCardNumber + NEXT_SHOWN_TASKS_COUNT;
+      loadMoreComponent.setClickHandler(() => {
+        const increasedCardNumber = lastShownCardNumber + NEXT_SHOWN_TASKS_COUNT;
 
-      tasks.slice(lastShownCardNumber, increasedCardNumber)
-        .forEach((task) => renderTask(task, tasksList.getElement()));
-      lastShownCardNumber = increasedCardNumber;
+        renderTasks(tasksList, tasks.slice(lastShownCardNumber, increasedCardNumber));
+        lastShownCardNumber = increasedCardNumber;
 
-      if (increasedCardNumber >= tasks.length) {
-        remove(loadMoreComponent);
+        if (increasedCardNumber >= tasks.length) {
+          remove(loadMoreComponent);
+        }
+      });
+    };
+
+    renderLoadMoreButton();
+
+    this._boardFilterComponent.setSortTypeChangeHandler((sortType) => {
+      let sortedTasks = [];
+
+      switch (sortType) {
+        case SortType.DATE_UP:
+          sortedTasks = tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
+          break;
+        case SortType.DATE_DOWN:
+          sortedTasks = tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
+          break;
+        case SortType.DEFAULT:
+          sortedTasks = tasks.slice(0, INITIALLY_SHOWN_TASKS_COUNT);
+          break;
+      }
+
+      tasksList.getElement().innerHTML = ``;
+      renderTasks(tasksList, sortedTasks);
+
+      if (sortType === SortType.DEFAULT) {
+        renderLoadMoreButton();
+      } else {
+        remove(this._loadMoreComponent);
       }
     });
   }
