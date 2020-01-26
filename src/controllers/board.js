@@ -8,20 +8,36 @@ import TaskController from "./task";
 const INITIALLY_SHOWN_TASKS_COUNT = 8;
 const NEXT_SHOWN_TASKS_COUNT = 8;
 
-const renderTasks = (taskListComponent, tasks) => {
-  tasks.forEach((task) => new TaskController(taskListComponent.getElement()).render(task));
-};
-
 export default class BoardController {
   constructor(boardComponent) {
+    this._tasks = [];
     this._boardComponent = boardComponent;
     this._noTasksComponent = new NoTasksComponent();
     this._loadMoreComponent = new LoadMoreComponent();
     this._boardFilterComponent = new BoardFilterComponent();
     this._taskListComponent = new TaskListComponent();
+
+    this._onDataChange = this._onDataChange.bind(this);
+  }
+
+  _onDataChange(taskController, oldTask, newTask) {
+    const index = this._tasks.findIndex((task) => task === oldTask);
+
+    if (index === -1) {
+      return;
+    }
+
+    this._tasks = [].concat(this._tasks.slice(0, index), newTask, this._tasks.slice(index + 1));
+
+    taskController.render(newTask);
+  }
+
+  _renderTasks(taskListComponent, tasks) {
+    tasks.forEach((task) => new TaskController(taskListComponent.getElement(), this._onDataChange).render(task));
   }
 
   render(tasks) {
+    this._tasks = tasks;
     const isAllTasksArchived = tasks.every((task) => task.isArchive);
     const container = this._boardComponent.getElement();
 
@@ -36,7 +52,7 @@ export default class BoardController {
     render(container, tasksList, RenderPosition.BEFOREEND);
 
     let lastShownCardNumber = INITIALLY_SHOWN_TASKS_COUNT;
-    renderTasks(tasksList, tasks.slice(0, lastShownCardNumber));
+    this._renderTasks(tasksList, tasks.slice(0, lastShownCardNumber));
 
     const renderLoadMoreButton = () => {
       if (INITIALLY_SHOWN_TASKS_COUNT >= tasks.length) {
@@ -49,7 +65,7 @@ export default class BoardController {
       loadMoreComponent.setClickHandler(() => {
         const increasedCardNumber = lastShownCardNumber + NEXT_SHOWN_TASKS_COUNT;
 
-        renderTasks(tasksList, tasks.slice(lastShownCardNumber, increasedCardNumber));
+        this._renderTasks(tasksList, tasks.slice(lastShownCardNumber, increasedCardNumber));
         lastShownCardNumber = increasedCardNumber;
 
         if (increasedCardNumber >= tasks.length) {
@@ -76,7 +92,7 @@ export default class BoardController {
       }
 
       tasksList.getElement().innerHTML = ``;
-      renderTasks(tasksList, sortedTasks);
+      this._renderTasks(tasksList, sortedTasks);
 
       if (sortType === SortType.DEFAULT) {
         renderLoadMoreButton();
