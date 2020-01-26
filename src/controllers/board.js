@@ -1,40 +1,15 @@
-import TaskComponent from "../components/task-card";
-import TaskEditFormComponent from "../components/task-card--edit";
-import {remove, render, RenderPosition, replace} from "../utils/render";
+import {remove, render, RenderPosition} from "../utils/render";
 import NoTasksComponent from "../components/no-tasks";
 import BoardFilterComponent, {SortType} from "../components/board-filter";
 import TaskListComponent from "../components/task-list";
 import LoadMoreComponent from "../components/load-more-button";
+import TaskController from "./task";
 
 const INITIALLY_SHOWN_TASKS_COUNT = 8;
 const NEXT_SHOWN_TASKS_COUNT = 8;
 
-const renderTask = (task, tasksList) => {
-  const taskComponent = new TaskComponent(task);
-  const taskFormComponent = new TaskEditFormComponent(task);
-
-  const onEscKeyDown = (evt) => {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-    if (isEscKey) {
-      replace(taskComponent, taskFormComponent);
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  taskComponent.setEditButtonClickHandler(() => {
-    replace(taskFormComponent, taskComponent);
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
-
-  taskFormComponent.setFormSubmitHandler(() => {
-    replace(taskComponent, taskFormComponent);
-  });
-
-  render(tasksList, taskComponent, RenderPosition.BEFOREEND);
-};
 const renderTasks = (taskListComponent, tasks) => {
-  tasks.forEach((task) => renderTask(task, taskListComponent.getElement()));
+  tasks.forEach((task) => new TaskController(taskListComponent.getElement()).render(task));
 };
 
 export default class BoardController {
