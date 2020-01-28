@@ -91,14 +91,15 @@ const makeDeadlineTemplate = (dueDate) => {
 };
 
 // Форма создания/редактирования задачи (используется одна форма)
-const createTaskEditFormTemplate = (task) => {
+const createTaskEditFormTemplate = (task, options = {}) => {
   const {description, dueDate, repeatingDays, tags, color} = task;
+  const {isDateShowing} = options;
 
   const colorsMarkup = makeColorsTemplate(COLORS, color);
   const hashtagsMarkup = makeHashtagsTemplate(tags);
 
   const hasDueDate = !!dueDate;
-  const deadlineMarkup = hasDueDate ? makeDeadlineTemplate(dueDate) : ``;
+  const deadlineMarkup = (isDateShowing && hasDueDate) ? makeDeadlineTemplate(dueDate) : ``;
 
   const isRepeated = Object.values(repeatingDays).some(Boolean);
   const repeatedClass = isRepeated ? `card--repeat` : ``;
@@ -182,17 +183,31 @@ export default class TaskEditFormComponent extends AbstractSmartComponent {
   constructor(task) {
     super();
     this._task = task;
+    this._isDateShowing = !!task.dueDate;
+
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
-    return createTaskEditFormTemplate(this._task);
+    return createTaskEditFormTemplate(this._task, {isDateShowing: this._isDateShowing});
   }
 
   setFormSubmitHandler(handler) {
     this.getElement().querySelector(`form`).addEventListener(`submit`, handler);
   }
 
-  recoveryListeners() {
+  _subscribeOnEvents() {
+    const element = this.getElement();
 
+    element.querySelector(`.card__date-deadline-toggle`)
+      .addEventListener(`click`, () => {
+        this._isDateShowing = !this._isDateShowing;
+
+        this.rerender();
+      });
+  }
+
+  recoveryListeners() {
+    this._subscribeOnEvents();
   }
 }
