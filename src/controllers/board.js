@@ -22,6 +22,7 @@ export default class BoardController {
 
     this._shownTasksCount = INITIALLY_SHOWN_TASKS_COUNT;
     this._onDataChange = this._onDataChange.bind(this);
+    this._onViewChange = this._onViewChange.bind(this);
 
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
 
@@ -38,6 +39,10 @@ export default class BoardController {
     this._tasks = [].concat(this._tasks.slice(0, index), newTask, this._tasks.slice(index + 1));
 
     taskController.render(newTask);
+  }
+
+  _onViewChange() {
+    this._activeTaskControllers.forEach((controller) => controller.setDefaultView());
   }
 
   _renderTasks(taskListComponent, tasks) {
@@ -63,7 +68,7 @@ export default class BoardController {
       this._shownTasksCount = lastShownCardNumber + NEXT_SHOWN_TASKS_COUNT;
 
       const newTasks = this._renderTasks(this._taskListComponent, this._tasks.slice(lastShownCardNumber, this._shownTasksCount));
-      this._activeTaskControllers.concat(newTasks);
+      this._activeTaskControllers = this._activeTaskControllers.concat(newTasks);
       lastShownCardNumber = this._shownTasksCount;
 
       if (this._shownTasksCount >= this._tasks.length) {
@@ -89,7 +94,7 @@ export default class BoardController {
 
     this._taskListComponent.getElement().innerHTML = ``;
     const newTasks = this._renderTasks(this._taskListComponent, sortedTasks);
-    this._activeTaskControllers.concat(newTasks);
+    this._activeTaskControllers = this._activeTaskControllers.concat(newTasks);
 
     if (sortType === SortType.DEFAULT) {
       this._renderLoadMoreButton();
@@ -114,7 +119,7 @@ export default class BoardController {
     render(container, tasksList, RenderPosition.BEFOREEND);
 
     const newTasks = this._renderTasks(tasksList, tasks.slice(0, this._shownTasksCount));
-    this._activeTaskControllers.concat(newTasks);
+    this._activeTaskControllers = this._activeTaskControllers.concat(newTasks);
 
     this._renderLoadMoreButton();
   }
