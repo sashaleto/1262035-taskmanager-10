@@ -5,9 +5,13 @@ import {render, RenderPosition, replace} from "../utils/render";
 export default class TaskController {
   constructor(container, onDataChange) {
     this._container = container; // taskList
+
     this._onDataChange = onDataChange;
+
     this._taskComponent = null;
     this._taskEditFormComponent = null;
+
+    this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
   render(task) {
@@ -17,19 +21,10 @@ export default class TaskController {
     this._taskComponent = new TaskComponent(task);
     this._taskEditFormComponent = new TaskEditFormComponent(task);
 
-    const onEscKeyDown = (evt) => {
-      const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
-
-      if (isEscKey) {
-        replace(this._taskComponent, this._taskEditFormComponent);
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
     this._taskComponent.setEditButtonClickHandler(() => {
       this._onDataChange();
-      replace(this._taskEditFormComponent, this._taskComponent);
-      document.addEventListener(`keydown`, onEscKeyDown);
+      this._replaceTaskToEdit();
+      document.addEventListener(`keydown`, this._onEscKeyDown);
     });
 
     this._taskComponent.setArchiveButtonClickHandler(() => {
@@ -45,7 +40,7 @@ export default class TaskController {
     });
 
     this._taskEditFormComponent.setFormSubmitHandler(() => {
-      replace(this._taskComponent, this._taskEditFormComponent);
+      this._replaceEditToTask();
     });
 
     if (taskFormOldComponent && taskOldComponent) {
@@ -53,6 +48,23 @@ export default class TaskController {
       replace(this._taskEditFormComponent, taskFormOldComponent);
     } else {
       render(this._container, this._taskComponent, RenderPosition.BEFOREEND);
+    }
+  }
+
+  _replaceEditToTask() {
+    replace(this._taskComponent, this._taskEditFormComponent);
+  }
+
+  _replaceTaskToEdit() {
+    replace(this._taskEditFormComponent, this._taskComponent);
+  }
+
+  _onEscKeyDown(evt) {
+    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscKey) {
+      this._replaceEditToTask();
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
   }
 }
