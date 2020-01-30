@@ -66,6 +66,7 @@ export default class TaskController {
   }
 
   _replaceEditToTask() {
+    this._taskEditFormComponent.reset();
     replace(this._taskComponent, this._taskEditFormComponent);
     this._mode = Mode.DEFAULT;
   }

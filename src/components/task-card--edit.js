@@ -185,7 +185,7 @@ export default class TaskEditFormComponent extends AbstractSmartComponent {
     this._task = task;
     this._isDateShowing = !!task.dueDate;
     this._isRepeated = checkIsTaskRepeated(task.repeatingDays);
-    this._activeRepeatingDays = task.repeatingDays;
+    this._activeRepeatingDays = Object.assign({}, task.repeatingDays);
 
     this._subscribeOnEvents();
   }
@@ -231,5 +231,15 @@ export default class TaskEditFormComponent extends AbstractSmartComponent {
 
   recoveryListeners() {
     this._subscribeOnEvents();
+  }
+
+  reset() {
+    const task = this._task;
+
+    this._isDateShowing = !!task.dueDate;
+    this._isRepeated = checkIsTaskRepeated(task.repeatingDays);
+    this._activeRepeatingDays = Object.assign({}, task.repeatingDays);
+
+    this.rerender();
   }
 }
