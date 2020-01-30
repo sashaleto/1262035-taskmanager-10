@@ -17,6 +17,8 @@ export default class BoardController {
     this._boardFilterComponent = new BoardFilterComponent();
     this._taskListComponent = new TaskListComponent();
 
+    this._shownTasksCount = INITIALLY_SHOWN_TASKS_COUNT;
+
     this._onDataChange = this._onDataChange.bind(this);
   }
 
@@ -36,6 +38,28 @@ export default class BoardController {
     tasks.forEach((task) => new TaskController(taskListComponent.getElement(), this._onDataChange).render(task));
   }
 
+  _renderLoadMoreButton() {
+    if (this._shownTasksCount >= this._tasks.length) {
+      return;
+    }
+    const loadMoreComponent = this._loadMoreComponent;
+    const container = this._boardComponent.getElement();
+    let lastShownCardNumber = this._shownTasksCount;
+
+    render(container, loadMoreComponent, RenderPosition.BEFOREEND);
+
+    loadMoreComponent.setClickHandler(() => {
+      this._shownTasksCount = lastShownCardNumber + NEXT_SHOWN_TASKS_COUNT;
+
+      this._renderTasks(this._taskListComponent, this._tasks.slice(lastShownCardNumber, this._shownTasksCount));
+      lastShownCardNumber = this._shownTasksCount;
+
+      if (this._shownTasksCount >= this._tasks.length) {
+        remove(loadMoreComponent);
+      }
+    });
+  }
+
   render(tasks) {
     this._tasks = tasks;
     const isAllTasksArchived = tasks.every((task) => task.isArchive);
@@ -51,30 +75,9 @@ export default class BoardController {
     const tasksList = this._taskListComponent;
     render(container, tasksList, RenderPosition.BEFOREEND);
 
-    let lastShownCardNumber = INITIALLY_SHOWN_TASKS_COUNT;
-    this._renderTasks(tasksList, tasks.slice(0, lastShownCardNumber));
+    this._renderTasks(tasksList, tasks.slice(0, this._shownTasksCount));
 
-    const renderLoadMoreButton = () => {
-      if (INITIALLY_SHOWN_TASKS_COUNT >= tasks.length) {
-        return;
-      }
-      const loadMoreComponent = this._loadMoreComponent;
-
-      render(container, loadMoreComponent, RenderPosition.BEFOREEND);
-
-      loadMoreComponent.setClickHandler(() => {
-        const increasedCardNumber = lastShownCardNumber + NEXT_SHOWN_TASKS_COUNT;
-
-        this._renderTasks(tasksList, tasks.slice(lastShownCardNumber, increasedCardNumber));
-        lastShownCardNumber = increasedCardNumber;
-
-        if (increasedCardNumber >= tasks.length) {
-          remove(loadMoreComponent);
-        }
-      });
-    };
-
-    renderLoadMoreButton();
+    this._renderLoadMoreButton();
 
     this._boardFilterComponent.setSortTypeChangeHandler((sortType) => {
       let sortedTasks = [];
@@ -95,7 +98,7 @@ export default class BoardController {
       this._renderTasks(tasksList, sortedTasks);
 
       if (sortType === SortType.DEFAULT) {
-        renderLoadMoreButton();
+        this._renderLoadMoreButton();
       } else {
         remove(this._loadMoreComponent);
       }
