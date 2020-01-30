@@ -1,6 +1,6 @@
 import AbstractSmartComponent from './abstract-smart-component';
 import {DAYS, COLORS, MONTH_NAMES} from '../constants.js';
-import {formatTime} from '../utils.js';
+import {formatTime, checkIsTaskRepeated} from '../utils.js';
 
 const makeRepeatingDaysTemplate = (days, repeatingDays) => {
   const daysMarkup = days.map((title) => {
@@ -106,6 +106,8 @@ const createTaskEditFormTemplate = (task, options = {}) => {
   const isExpired = dueDate instanceof Date && dueDate < Date.now();
   const deadlineClass = isExpired ? `card--deadline` : ``;
 
+  const isBlockSaveButton = (isDateShowing && isRepeated) || (isRepeated && !checkIsTaskRepeated(activeRepeatingDays));
+
   return `
     <article class="card card--edit card--${color} ${repeatedClass} ${deadlineClass}">
       <form class="card__form" method="get">
@@ -168,7 +170,7 @@ const createTaskEditFormTemplate = (task, options = {}) => {
           </div>
 
           <div class="card__status-btns">
-            <button class="card__save" type="submit">save</button>
+            <button class="card__save" type="submit" ${isBlockSaveButton ? `disabled` : ``}>save</button>
             <button class="card__delete" type="button">delete</button>
           </div>
         </div>
@@ -182,7 +184,7 @@ export default class TaskEditFormComponent extends AbstractSmartComponent {
     super();
     this._task = task;
     this._isDateShowing = !!task.dueDate;
-    this._isRepeated = Object.values(task.repeatingDays).some(Boolean);
+    this._isRepeated = checkIsTaskRepeated(task.repeatingDays);
     this._activeRepeatingDays = task.repeatingDays;
 
     this._subscribeOnEvents();
