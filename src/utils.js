@@ -28,3 +28,7 @@ export const formatTime = (date) => {
 
   return `${hours}:${minutes} ${interval}`;
 };
+
+export const checkIsTaskRepeated = (days) => {
+  return Object.values(days).some(Boolean);
+};
