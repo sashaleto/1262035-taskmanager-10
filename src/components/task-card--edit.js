@@ -188,6 +188,7 @@ export default class TaskEditFormComponent extends AbstractSmartComponent {
     this._isRepeated = checkIsTaskRepeated(task.repeatingDays);
     this._activeRepeatingDays = Object.assign({}, task.repeatingDays);
     this._submitHandler = null;
+    this._deleteHandler = null;
     this._flatpickr = null;
 
     this._applyFlatpickr();
@@ -206,6 +207,12 @@ export default class TaskEditFormComponent extends AbstractSmartComponent {
     this.getElement().querySelector(`form`).addEventListener(`submit`, handler);
 
     this._submitHandler = handler;
+  }
+
+  setDeleteTaskHandler(handler) {
+    this.getElement().querySelector(`.card__delete`).addEventListener(`click`, handler);
+
+    this._deleteHandler = handler;
   }
 
   _subscribeOnEvents() {
@@ -237,6 +244,7 @@ export default class TaskEditFormComponent extends AbstractSmartComponent {
 
   recoveryListeners() {
     this.setFormSubmitHandler(this._submitHandler);
+    this.setDeleteTaskHandler(this._deleteHandler);
     this._subscribeOnEvents();
   }
 

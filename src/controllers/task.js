@@ -51,6 +51,11 @@ export default class TaskController {
       this._replaceEditToTask();
     });
 
+    this._taskEditFormComponent.setDeleteTaskHandler(() => {
+      let newTask = null;
+      this._onDataChange(this, task, newTask);
+    });
+
     if (taskFormOldComponent && taskOldComponent) {
       replace(this._taskComponent, taskOldComponent);
       replace(this._taskEditFormComponent, taskFormOldComponent);

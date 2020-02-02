@@ -33,10 +33,15 @@ export default class BoardController {
   }
 
   _onDataChange(taskController, oldTask, newTask) {
-    const isSuccess = this._tasksModel.updateTask(oldTask.id, newTask);
+    if (newTask === null) {
+      this._tasksModel.removeTask(oldTask.id);
+      this._updateTasks(this._shownTasksCount);
+    } else {
+      const isSuccess = this._tasksModel.updateTask(oldTask.id, newTask);
 
-    if (isSuccess) {
-      taskController.render(newTask);
+      if (isSuccess) {
+        taskController.render(newTask);
+      }
     }
   }
 
@@ -99,6 +104,12 @@ export default class BoardController {
     } else {
       remove(this._loadMoreComponent);
     }
+  }
+
+  _updateTasks(count) {
+    this._removeTasks();
+    this._renderTasks(this._taskListComponent, this._tasksModel.getTasks().slice(0, count));
+    this._renderLoadMoreButton();
   }
 
   _removeTasks() {
