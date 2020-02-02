@@ -47,7 +47,8 @@ export default class TaskController {
       this._onDataChange(this, task, newTask);
     });
 
-    this._taskEditFormComponent.setFormSubmitHandler(() => {
+    this._taskEditFormComponent.setFormSubmitHandler((evt) => {
+      evt.preventDefault();
       this._replaceEditToTask();
     });
 
@@ -66,8 +67,11 @@ export default class TaskController {
   }
 
   _replaceEditToTask() {
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._taskEditFormComponent.reset();
+
     replace(this._taskComponent, this._taskEditFormComponent);
+
     this._mode = Mode.DEFAULT;
   }
 
