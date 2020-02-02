@@ -6,7 +6,7 @@ import {generateTasks} from './mocks/task.js';
 import {RenderPosition, render} from './utils/render';
 import FilterController from "./controllers/filter";
 
-const TASK_COUNT = 10;
+const TASK_COUNT = 28;
 
 const tasks = generateTasks(TASK_COUNT);
 const tasksModel = new TasksModel();

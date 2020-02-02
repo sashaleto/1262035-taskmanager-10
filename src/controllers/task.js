@@ -1,6 +1,6 @@
 import TaskComponent from "../components/task-card";
 import TaskEditFormComponent from "../components/task-card--edit";
-import {render, RenderPosition, replace} from "../utils/render";
+import {render, RenderPosition, replace, remove} from "../utils/render";
 
 const Mode = {
   DEFAULT: `default`,
@@ -87,5 +87,11 @@ export default class TaskController {
       this._replaceEditToTask();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
+  }
+
+  destroy() {
+    remove(this._taskEditFormComponent);
+    remove(this._taskComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 }
