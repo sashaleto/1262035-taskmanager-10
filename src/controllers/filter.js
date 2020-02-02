@@ -2,6 +2,7 @@ import FilterComponent from "../components/main-filter";
 import {FilterType} from "../constants";
 import {RenderPosition, render} from '../utils/render';
 import {getTasksByFilter} from "../utils/filters";
+import {remove} from "../utils/render";
 
 export default class FilterController {
   constructor(container, tasksModel) {
@@ -11,6 +12,7 @@ export default class FilterController {
     this._activeFilterType = FilterType.ALL;
 
     this._onFilterChange = this._onFilterChange.bind(this);
+    this._tasksModel.setDataChangeHandler(this._onDataChange);
   }
 
   render() {
@@ -33,5 +35,10 @@ export default class FilterController {
   _onFilterChange(filterType) {
     this._tasksModel.setFilter(filterType);
     this._activeFilterType = filterType;
+  }
+
+  _onDataChange() {
+    remove(this._filterComponent);
+    this.render();
   }
 }

@@ -6,6 +6,7 @@ export default class Tasks {
     this._tasks = [];
     this._activeFilterType = FilterType.ALL;
     this._filterChangeHandlers = [];
+    this._dataChangeHandlers = [];
   }
 
   getTasks() {
@@ -39,5 +40,9 @@ export default class Tasks {
 
   setFilterChangeHandler(handler) {
     this._filterChangeHandlers.push(handler);
+  }
+
+  setDataChangeHandler(handler) {
+    this._dataChangeHandlers.push(handler);
   }
 }
