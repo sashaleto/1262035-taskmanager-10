@@ -1,6 +1,6 @@
 import flatpickr from 'flatpickr';
 import AbstractSmartComponent from './abstract-smart-component';
-import {DAYS, COLORS, MONTH_NAMES} from '../constants.js';
+import {DAYS, COLORS} from '../constants.js';
 import {formatTime, formatDate, checkIsTaskRepeated} from '../utils.js';
 
 const makeRepeatingDaysTemplate = (days, repeatingDays) => {

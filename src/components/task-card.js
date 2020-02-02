@@ -1,6 +1,5 @@
 import AbstractComponent from './abstract-component';
 import {formatDate, formatTime, checkIsTaskRepeated} from '../utils.js';
-import {MONTH_NAMES} from '../constants.js';
 
 const createHashTagsTemplate = (tags) => {
   return tags.map((tag) => {
