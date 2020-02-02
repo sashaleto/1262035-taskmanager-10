@@ -58,6 +58,7 @@ export default class BoardController {
     const tasks = this._tasksModel.getTasks();
 
     if (this._shownTasksCount >= tasks.length) {
+      remove(this._loadMoreComponent);
       return;
     }
     const loadMoreComponent = this._loadMoreComponent;
