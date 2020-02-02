@@ -32,9 +32,10 @@ const makeRandomTags = (tags) => {
 
 const generateSingleTask = () => {
   const dueDate = Math.random() > 0.5 ? null : makeRandomDate();
+  const now = new Date().toDateString();
 
   return {
-    id: String(new Date() + Math.random()),
+    id: String(Date.parse(now)) + String(Math.random()),
     description: getRandomArrayItem(DESCRIPTIONS),
     dueDate,
     repeatingDays: dueDate ? DEFAULT_REPEATING_DAYS : makeRepeatingDays(),

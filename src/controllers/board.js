@@ -9,9 +9,10 @@ const INITIALLY_SHOWN_TASKS_COUNT = 8;
 const NEXT_SHOWN_TASKS_COUNT = 8;
 
 export default class BoardController {
-  constructor(boardComponent) {
-    this._tasks = [];
+  constructor(boardComponent, tasksModel) {
     this._activeTaskControllers = [];
+
+    this._tasksModel = tasksModel;
 
     this._boardComponent = boardComponent;
     this._noTasksComponent = new NoTasksComponent();
@@ -30,15 +31,11 @@ export default class BoardController {
   }
 
   _onDataChange(taskController, oldTask, newTask) {
-    const index = this._tasks.findIndex((task) => task === oldTask);
+    const isSuccess = this._tasksModel.updateTask(oldTask.id, newTask);
 
-    if (index === -1) {
-      return;
+    if (isSuccess) {
+      taskController.render(newTask);
     }
-
-    this._tasks = [].concat(this._tasks.slice(0, index), newTask, this._tasks.slice(index + 1));
-
-    taskController.render(newTask);
   }
 
   _onViewChange() {
@@ -55,7 +52,9 @@ export default class BoardController {
   }
 
   _renderLoadMoreButton() {
-    if (this._shownTasksCount >= this._tasks.length) {
+    const tasks = this._tasksModel.getTasks();
+
+    if (this._shownTasksCount >= tasks.length) {
       return;
     }
     const loadMoreComponent = this._loadMoreComponent;
@@ -67,11 +66,11 @@ export default class BoardController {
     loadMoreComponent.setClickHandler(() => {
       this._shownTasksCount = lastShownCardNumber + NEXT_SHOWN_TASKS_COUNT;
 
-      const newTasks = this._renderTasks(this._taskListComponent, this._tasks.slice(lastShownCardNumber, this._shownTasksCount));
+      const newTasks = this._renderTasks(this._taskListComponent, tasks.slice(lastShownCardNumber, this._shownTasksCount));
       this._activeTaskControllers = this._activeTaskControllers.concat(newTasks);
       lastShownCardNumber = this._shownTasksCount;
 
-      if (this._shownTasksCount >= this._tasks.length) {
+      if (this._shownTasksCount >= tasks.length) {
         remove(loadMoreComponent);
       }
     });
@@ -79,16 +78,17 @@ export default class BoardController {
 
   _onSortTypeChange(sortType) {
     let sortedTasks = [];
+    const tasks = this._tasksModel.getTasks();
 
     switch (sortType) {
       case SortType.DATE_UP:
-        sortedTasks = this._tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
+        sortedTasks = tasks.slice().sort((a, b) => a.dueDate - b.dueDate);
         break;
       case SortType.DATE_DOWN:
-        sortedTasks = this._tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
+        sortedTasks = tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
         break;
       case SortType.DEFAULT:
-        sortedTasks = this._tasks.slice(0, INITIALLY_SHOWN_TASKS_COUNT);
+        sortedTasks = tasks.slice(0, INITIALLY_SHOWN_TASKS_COUNT);
         break;
     }
 
@@ -103,8 +103,8 @@ export default class BoardController {
     }
   }
 
-  render(tasks) {
-    this._tasks = tasks;
+  render() {
+    const tasks = this._tasksModel.getTasks();
     const isAllTasksArchived = tasks.every((task) => task.isArchive);
     const container = this._boardComponent.getElement();
 

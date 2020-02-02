@@ -30,7 +30,6 @@ export default class TaskController {
     this._taskEditFormComponent = new TaskEditFormComponent(task);
 
     this._taskComponent.setEditButtonClickHandler(() => {
-      this._onDataChange();
       this._replaceTaskToEdit();
       document.addEventListener(`keydown`, this._onEscKeyDown);
     });
