@@ -15,6 +15,16 @@ export const MONTH_NAMES = [
 
 export const FILTER_TITLES = [`All`, `Overdue`, `Today`, `Favorites`, `Repeating`, `Tags`, `Archive`];
 
+export const FilterType = {
+  ALL: `all`,
+  ARCHIVE: `archive`,
+  FAVORITES: `favorites`,
+  OVERDUE: `overdue`,
+  REPEATING: `repeating`,
+  TAGS: `tags`,
+  TODAY: `today`,
+};
+
 export const DAYS = [`mo`, `tu`, `we`, `th`, `fr`, `sa`, `su`];
 
 export const COLORS = [`black`, `yellow`, `blue`, `green`, `pink`];
