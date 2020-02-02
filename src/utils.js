@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 /**
  * Генерация случайного числа в диапазоне от 0 до max
  * @param {number} max - максимальное значение
@@ -11,22 +13,12 @@ export const getRandomArrayItem = (array) => {
   return array[getRandomNumber(array.length)];
 };
 
-const castTimeFormat = (value) => {
-  return value < 10 ? `0${value}` : String(value);
+export const formatTime = (date) => {
+  return moment(date).format(`hh:mm A`);
 };
 
-/**
- * Приведение формата времени в вид: "hh:mm a"
- * @param {Date} date - исходная дата-время
- * @return {string} - отформатированное время
- */
-export const formatTime = (date) => {
-  const hours = castTimeFormat(date.getHours() % 12);
-  const minutes = castTimeFormat(date.getMinutes());
-
-  const interval = date.getHours() > 11 ? `PM` : `AM`;
-
-  return `${hours}:${minutes} ${interval}`;
+export const formatDate = (date) => {
+  return moment(date).format(`DD MMMM`);
 };
 
 export const checkIsTaskRepeated = (days) => {

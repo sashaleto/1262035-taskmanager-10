@@ -1,7 +1,7 @@
 import flatpickr from 'flatpickr';
 import AbstractSmartComponent from './abstract-smart-component';
 import {DAYS, COLORS, MONTH_NAMES} from '../constants.js';
-import {formatTime, checkIsTaskRepeated} from '../utils.js';
+import {formatTime, formatDate, checkIsTaskRepeated} from '../utils.js';
 
 const makeRepeatingDaysTemplate = (days, repeatingDays) => {
   const daysMarkup = days.map((title) => {
@@ -73,7 +73,7 @@ const makeHashtagsTemplate = (tags) => {
 };
 
 const makeDeadlineTemplate = (dueDate) => {
-  const date = dueDate ? `${dueDate.getDate()} ${MONTH_NAMES[dueDate.getMonth()]}` : ``;
+  const date = dueDate ? formatDate(dueDate) : ``;
   const time = dueDate ? formatTime(dueDate) : ``;
 
   return `

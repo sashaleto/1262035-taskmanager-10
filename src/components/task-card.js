@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component';
-import {formatTime, checkIsTaskRepeated} from '../utils.js';
+import {formatDate, formatTime, checkIsTaskRepeated} from '../utils.js';
 import {MONTH_NAMES} from '../constants.js';
 
 const createHashTagsTemplate = (tags) => {
@@ -28,7 +28,7 @@ const createButtonMarkup = (name, isActive) => {
 const createSingleTaskTemplate = (task) => {
   const {description, dueDate, repeatingDays, tags, color} = task;
 
-  const date = dueDate ? `${dueDate.getDate()} ${MONTH_NAMES[dueDate.getMonth()]}` : ``;
+  const date = dueDate ? formatDate(dueDate) : ``;
   const time = dueDate ? formatTime(dueDate) : ``;
 
   const isExpired = dueDate ? (dueDate < Date.now()) : false;
