@@ -1,7 +1,7 @@
 import AbstractComponent from './abstract-component';
 
-const createSingleFilterTemplate = (filter, isChecked) => {
-  const {title, count} = filter;
+const createSingleFilterTemplate = (filter) => {
+  const {title, count, checked} = filter;
 
   return `
     <input
@@ -9,18 +9,18 @@ const createSingleFilterTemplate = (filter, isChecked) => {
         id="filter__${title}"
         class="filter__input visually-hidden"
         name="filter"
-        ${isChecked ? `checked` : ``}
         ${!count ? `disabled` : ``}
-      />
-      <label for="filter__${title}" class="filter__label">
-        ${title} <span class="filter__${title}-count">${count}</span></label
-      >
+        ${checked ? `checked` : ``}
+    />
+    <label for="filter__${title}" class="filter__label">
+      ${title} <span class="filter__${title}-count">${count}</span>
+    </label>
   `;
 };
 
 const createFiltersTemplate = (filters) => {
-  const filtersTemplate = filters.map((filter, index) => {
-    return createSingleFilterTemplate(filter, index === 0);
+  const filtersTemplate = filters.map((filter) => {
+    return createSingleFilterTemplate(filter);
   }).join(``);
 
   return `
