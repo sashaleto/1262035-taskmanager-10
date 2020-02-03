@@ -30,22 +30,22 @@ const makeRepeatingDaysTemplate = (days, repeatingDays) => {
   `;
 };
 
-const makeColorsTemplate = (colorNames, taskColor) => {
-  return colorNames.map((name) => {
-    const isChecked = (name === taskColor);
+const makeColorsTemplate = (colors, taskColor) => {
+  return colors.map((color) => {
+    const isChecked = (color === taskColor);
     return `
       <input
         type="radio"
-        id="color-${name}-4"
-        class="card__color-input card__color-input--${name} visually-hidden"
+        id="color-${color}-4"
+        class="card__color-input card__color-input--${color} visually-hidden"
         name="color"
-        value="${name}"
+        value="${color}"
         ${isChecked ? `checked` : ``}
       />
       <label
         for="color-black-4"
-        class="card__color card__color--${name}"
-        >${name}</label
+        class="card__color card__color--${color}"
+        >${color}</label
       >
     `;
   }).join(``);
