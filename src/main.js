@@ -14,8 +14,8 @@ tasksModel.setTasks(tasks);
 
 const mainElement = document.querySelector(`.main`);
 const menuContainer = mainElement.querySelector(`.main__control`);
-
-render(menuContainer, new MainMenuComponent(), RenderPosition.BEFOREEND);
+const mainMenuComponent = new MainMenuComponent();
+render(menuContainer, mainMenuComponent, RenderPosition.BEFOREEND);
 
 const filterController = new FilterController(mainElement, tasksModel);
 filterController.render();
@@ -25,3 +25,8 @@ render(mainElement, boardComponent, RenderPosition.BEFOREEND);
 
 const board = new BoardController(boardComponent, tasksModel);
 board.render();
+
+mainMenuComponent.getElement().querySelector(`.control__label--new-task`)
+  .addEventListener(`click`, () => {
+    board.createTask();
+  });

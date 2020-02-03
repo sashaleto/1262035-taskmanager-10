@@ -1,10 +1,30 @@
 import TaskComponent from "../components/task-card";
 import TaskEditFormComponent from "../components/task-card--edit";
 import {render, RenderPosition, replace, remove} from "../utils/render";
+import {COLOR} from "../constants";
 
-const Mode = {
+export const Mode = {
+  ADDING: `adding`,
   DEFAULT: `default`,
   EDIT: `edit`,
+};
+
+export const EmptyTask = {
+  description: ``,
+  dueDate: null,
+  repeatingDays: {
+    'mo': false,
+    'tu': false,
+    'we': false,
+    'th': false,
+    'fr': false,
+    'sa': false,
+    'su': false,
+  },
+  tags: [],
+  color: COLOR.BLACK,
+  isFavorite: false,
+  isArchive: false,
 };
 
 export default class TaskController {
@@ -22,9 +42,10 @@ export default class TaskController {
     this._onEscKeyDown = this._onEscKeyDown.bind(this);
   }
 
-  render(task) {
+  render(task, mode) {
     const taskOldComponent = this._taskComponent;
     const taskFormOldComponent = this._taskEditFormComponent;
+    this._mode = mode;
 
     this._taskComponent = new TaskComponent(task);
     this._taskEditFormComponent = new TaskEditFormComponent(task);
@@ -48,19 +69,32 @@ export default class TaskController {
 
     this._taskEditFormComponent.setFormSubmitHandler((evt) => {
       evt.preventDefault();
-      this._replaceEditToTask();
+      const data = this._taskEditFormComponent.getData();
+      this._onDataChange(this, task, data);
     });
 
     this._taskEditFormComponent.setDeleteTaskHandler(() => {
-      let newTask = null;
-      this._onDataChange(this, task, newTask);
+      this._onDataChange(this, task, null);
     });
 
-    if (taskFormOldComponent && taskOldComponent) {
-      replace(this._taskComponent, taskOldComponent);
-      replace(this._taskEditFormComponent, taskFormOldComponent);
-    } else {
-      render(this._container, this._taskComponent, RenderPosition.BEFOREEND);
+    switch (mode) {
+      case Mode.DEFAULT:
+        if (taskFormOldComponent && taskOldComponent) {
+          replace(this._taskComponent, taskOldComponent);
+          replace(this._taskEditFormComponent, taskFormOldComponent);
+          this._replaceEditToTask();
+        } else {
+          render(this._container, this._taskComponent, RenderPosition.BEFOREEND);
+        }
+        break;
+      case Mode.ADDING:
+        if (taskFormOldComponent && taskOldComponent) {
+          remove(taskOldComponent);
+          remove(taskFormOldComponent);
+        }
+        document.addEventListener(`keydown`, this._onEscKeyDown);
+        render(this._container, this._taskEditFormComponent, RenderPosition.AFTERBEGIN);
+        break;
     }
   }
 
