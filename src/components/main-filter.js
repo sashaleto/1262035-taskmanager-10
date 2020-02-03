@@ -1,7 +1,13 @@
 import AbstractComponent from './abstract-component';
 
-const createSingleFilterTemplate = (filter, isChecked) => {
-  const {title, count} = filter;
+const FILTER_ID_PREFIX = `filter__`;
+
+const getFilterNameById = (id) => {
+  return id.substring(FILTER_ID_PREFIX.length);
+};
+
+const createSingleFilterTemplate = (filter) => {
+  const {title, count, checked} = filter;
 
   return `
     <input
@@ -9,18 +15,18 @@ const createSingleFilterTemplate = (filter, isChecked) => {
         id="filter__${title}"
         class="filter__input visually-hidden"
         name="filter"
-        ${isChecked ? `checked` : ``}
         ${!count ? `disabled` : ``}
-      />
-      <label for="filter__${title}" class="filter__label">
-        ${title} <span class="filter__${title}-count">${count}</span></label
-      >
+        ${checked ? `checked` : ``}
+    />
+    <label for="filter__${title}" class="filter__label">
+      ${title} <span class="filter__${title}-count">${count}</span>
+    </label>
   `;
 };
 
 const createFiltersTemplate = (filters) => {
-  const filtersTemplate = filters.map((filter, index) => {
-    return createSingleFilterTemplate(filter, index === 0);
+  const filtersTemplate = filters.map((filter) => {
+    return createSingleFilterTemplate(filter);
   }).join(``);
 
   return `
@@ -38,5 +44,12 @@ export default class FilterComponent extends AbstractComponent {
 
   getTemplate() {
     return createFiltersTemplate(this._filters);
+  }
+
+  setFilterChangeHandler(handler) {
+    this.getElement().addEventListener(`change`, (evt) => {
+      const filterName = getFilterNameById(evt.target.id);
+      handler(filterName);
+    });
   }
 }

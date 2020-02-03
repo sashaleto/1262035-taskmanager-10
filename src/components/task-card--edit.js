@@ -30,22 +30,22 @@ const makeRepeatingDaysTemplate = (days, repeatingDays) => {
   `;
 };
 
-const makeColorsTemplate = (colorNames, taskColor) => {
-  return colorNames.map((name) => {
-    const isChecked = (name === taskColor);
+const makeColorsTemplate = (colors, taskColor) => {
+  return colors.map((color) => {
+    const isChecked = (color === taskColor);
     return `
       <input
         type="radio"
-        id="color-${name}-4"
-        class="card__color-input card__color-input--${name} visually-hidden"
+        id="color-${color}-4"
+        class="card__color-input card__color-input--${color} visually-hidden"
         name="color"
-        value="${name}"
+        value="${color}"
         ${isChecked ? `checked` : ``}
       />
       <label
         for="color-black-4"
-        class="card__color card__color--${name}"
-        >${name}</label
+        class="card__color card__color--${color}"
+        >${color}</label
       >
     `;
   }).join(``);
@@ -180,6 +180,25 @@ const createTaskEditFormTemplate = (task, options = {}) => {
   `;
 };
 
+const parseFormData = (formData) => {
+  const repeatingDays = DAYS.reduce((acc, day) => {
+    acc[day] = false;
+    return acc;
+  }, {});
+  const date = formData.get(`date`);
+
+  return {
+    description: formData.get(`text`),
+    color: formData.get(`color`),
+    tags: formData.getAll(`hashtag`),
+    dueDate: date ? new Date(date) : null,
+    repeatingDays: formData.getAll(`repeat`).reduce((acc, it) => {
+      acc[it] = true;
+      return acc;
+    }, repeatingDays),
+  };
+};
+
 export default class TaskEditFormComponent extends AbstractSmartComponent {
   constructor(task) {
     super();
@@ -188,10 +207,18 @@ export default class TaskEditFormComponent extends AbstractSmartComponent {
     this._isRepeated = checkIsTaskRepeated(task.repeatingDays);
     this._activeRepeatingDays = Object.assign({}, task.repeatingDays);
     this._submitHandler = null;
+    this._deleteHandler = null;
     this._flatpickr = null;
 
     this._applyFlatpickr();
     this._subscribeOnEvents();
+  }
+
+  getData() {
+    const form = this.getElement().querySelector(`.card__form`);
+    const formData = new FormData(form);
+
+    return parseFormData(formData);
   }
 
   getTemplate() {
@@ -206,6 +233,12 @@ export default class TaskEditFormComponent extends AbstractSmartComponent {
     this.getElement().querySelector(`form`).addEventListener(`submit`, handler);
 
     this._submitHandler = handler;
+  }
+
+  setDeleteTaskHandler(handler) {
+    this.getElement().querySelector(`.card__delete`).addEventListener(`click`, handler);
+
+    this._deleteHandler = handler;
   }
 
   _subscribeOnEvents() {
@@ -237,6 +270,7 @@ export default class TaskEditFormComponent extends AbstractSmartComponent {
 
   recoveryListeners() {
     this.setFormSubmitHandler(this._submitHandler);
+    this.setDeleteTaskHandler(this._deleteHandler);
     this._subscribeOnEvents();
   }
 
