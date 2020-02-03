@@ -2,7 +2,7 @@ import FilterComponent from "../components/main-filter";
 import {FilterType} from "../constants";
 import {RenderPosition, render} from '../utils/render';
 import {getTasksByFilter} from "../utils/filters";
-import {remove} from "../utils/render";
+import {replace} from "../utils/render";
 
 export default class FilterController {
   constructor(container, tasksModel) {
@@ -12,6 +12,7 @@ export default class FilterController {
     this._activeFilterType = FilterType.ALL;
 
     this._onFilterChange = this._onFilterChange.bind(this);
+    this._onDataChange = this._onDataChange.bind(this);
     this._tasksModel.setDataChangeHandler(this._onDataChange);
   }
 
@@ -26,10 +27,16 @@ export default class FilterController {
       };
     });
 
+    const oldComponent = this._filterComponent;
+
     this._filterComponent = new FilterComponent(filters);
     this._filterComponent.setFilterChangeHandler(this._onFilterChange);
 
-    render(container, this._filterComponent, RenderPosition.BEFOREEND);
+    if (oldComponent) {
+      replace(this._filterComponent, oldComponent);
+    } else {
+      render(container, this._filterComponent, RenderPosition.BEFOREEND);
+    }
   }
 
   _onFilterChange(filterType) {
@@ -38,7 +45,6 @@ export default class FilterController {
   }
 
   _onDataChange() {
-    remove(this._filterComponent);
     this.render();
   }
 }
