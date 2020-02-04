@@ -18,10 +18,12 @@ const utilRenderTasks = (taskListElement, tasks, onDataChange, onViewChange) => 
 };
 
 export default class BoardController {
-  constructor(boardComponent, tasksModel) {
+  constructor(boardComponent, tasksModel, api) {
     this._activeTaskControllers = [];
 
     this._tasksModel = tasksModel;
+
+    this._api = api;
 
     this._boardComponent = boardComponent;
     this._noTasksComponent = new NoTasksComponent();
@@ -67,11 +69,14 @@ export default class BoardController {
       this._tasksModel.removeTask(oldTask.id);
       this._updateTasks(this._shownTasksCount);
     } else { // сохранение отредактированных данных в существующей карточке
-      const isSuccess = this._tasksModel.updateTask(oldTask.id, newTask);
-
-      if (isSuccess) {
-        taskController.render(newTask, TaskControllerMode.DEFAULT);
-      }
+      this._api.updateTask(oldTask.id, newTask)
+        .then((taskModel) => {
+          const isSuccess = this._tasksModel.updateTask(oldTask.id, newTask);
+          if (isSuccess) {
+            taskController.render(taskModel, TaskControllerMode.DEFAULT);
+            this._updateTasks(this._shownTasksCount);
+          }
+        });
     }
   }
 

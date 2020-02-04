@@ -1,4 +1,4 @@
-import Task from './models/task.js';
+import TaskModel from './models/task.js';
 
 const Method = {
   GET: `GET`,
@@ -34,7 +34,18 @@ const API = class {
   getTasks() {
     return this._load({url: `tasks`})
       .then((response) => response.json())
-      .then(Task.parseTasks);
+      .then(TaskModel.parseTasks);
+  }
+
+  updateTask(id, data) {
+    return this._load({
+      url: `tasks/${id}`,
+      method: Method.PUT,
+      body: JSON.stringify(data.toRAW()),
+      headers: new Headers({'Content-Type': `application/json`})
+    })
+      .then((response) => response.json())
+      .then(TaskModel.parseTask);
   }
 };
 

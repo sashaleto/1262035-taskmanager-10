@@ -1,7 +1,8 @@
 import TaskComponent from "../components/task-card";
+import TaskModel from "../models/task";
 import TaskEditFormComponent from "../components/task-card--edit";
 import {render, RenderPosition, replace, remove} from "../utils/render";
-import {COLOR} from "../constants";
+import {COLOR, DAYS} from "../constants";
 
 export const Mode = {
   ADDING: `adding`,
@@ -25,6 +26,27 @@ export const EmptyTask = {
   color: COLOR.BLACK,
   isFavorite: false,
   isArchive: false,
+};
+
+const parseFormData = (formData) => {
+  const date = formData.get(`date`);
+  const repeatingDays = DAYS.reduce((acc, day) => {
+    acc[day] = false;
+    return acc;
+  }, {});
+
+  return new TaskModel({
+    'description': formData.get(`text`),
+    'due_date': date ? new Date(date) : null,
+    'tags': formData.getAll(`hashtag`),
+    'repeating_days': formData.getAll(`repeat`).reduce((acc, it) => {
+      acc[it] = true;
+      return acc;
+    }, repeatingDays),
+    'color': formData.get(`color`),
+    'is_favorite': false,
+    'is_done': false,
+  });
 };
 
 export default class TaskController {
@@ -56,20 +78,21 @@ export default class TaskController {
     });
 
     this._taskComponent.setArchiveButtonClickHandler(() => {
-      let newTask = Object.assign({}, task);
+      const newTask = TaskModel.clone(task);
       newTask.isArchive = !task.isArchive;
       this._onDataChange(this, task, newTask);
     });
 
     this._taskComponent.setFavoritesButtonClickHandler(() => {
-      let newTask = Object.assign({}, task);
+      const newTask = TaskModel.clone(task);
       newTask.isFavorite = !task.isFavorite;
       this._onDataChange(this, task, newTask);
     });
 
     this._taskEditFormComponent.setFormSubmitHandler((evt) => {
       evt.preventDefault();
-      const data = this._taskEditFormComponent.getData();
+      const formData = this._taskEditFormComponent.getData();
+      const data = parseFormData(formData);
       this._onDataChange(this, task, data);
     });
 

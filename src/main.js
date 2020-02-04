@@ -24,7 +24,7 @@ filterController.render();
 const boardComponent = new BoardComponent();
 render(mainElement, boardComponent, RenderPosition.BEFOREEND);
 
-const board = new BoardController(boardComponent, tasksModel);
+const board = new BoardController(boardComponent, tasksModel, api);
 
 api.getTasks()
   .then((tasks) => {
