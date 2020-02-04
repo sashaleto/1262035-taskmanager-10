@@ -108,7 +108,9 @@ export default class TaskController {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._taskEditFormComponent.reset();
 
-    replace(this._taskComponent, this._taskEditFormComponent);
+    if (document.contains(this._taskEditFormComponent.getElement())) {
+      replace(this._taskComponent, this._taskEditFormComponent);
+    }
 
     this._mode = Mode.DEFAULT;
   }
